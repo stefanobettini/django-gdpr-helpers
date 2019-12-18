@@ -101,7 +101,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="event",
-                        to="privacy.LegalReason",
+                        to="gdpr_helpers.LegalReason",
                         verbose_name="Ragione legale",
                     ),
                 ),
@@ -110,7 +110,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="event",
-                        to="privacy.PrivacyLog",
+                        to="gdpr_helpers.PrivacyLog",
                         verbose_name="Privacy log",
                     ),
                 ),

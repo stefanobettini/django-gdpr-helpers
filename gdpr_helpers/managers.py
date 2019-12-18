@@ -26,9 +26,9 @@ class LegalReasonManager(models.Manager):
 class PrivacyLogManager(models.Manager):
     def _lazy_load_models(self):
         """Lazy load the models so we don't get circular imports problems"""
-        self.legal_reason = apps.get_model("privacy", "LegalReason")
-        self.privacy_log = apps.get_model("privacy", "PrivacyLog")
-        self.privacy_event = apps.get_model("privacy", "PrivacyEvent")
+        self.legal_reason = apps.get_model("gdpr_helpers", "LegalReason")
+        self.privacy_log = apps.get_model("gdpr_helpers", "PrivacyLog")
+        self.privacy_event = apps.get_model("gdpr_helpers", "PrivacyEvent")
 
     def create_log(self, user, cleaned_data):
         self._lazy_load_models()
