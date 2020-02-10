@@ -1,0 +1,4 @@
+[tool.black]
+line-length=88
+exclude='node_modules'
+target-version = ['py37']
