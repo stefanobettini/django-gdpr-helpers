@@ -1,6 +1,7 @@
 from django import forms
 from django.apps import apps
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class LegalReasonManager(models.Manager):
@@ -12,15 +13,31 @@ class LegalReasonManager(models.Manager):
         """Return a list of dict of Legal Reasons fields (booleanField)"""
         fields = []
         for reason in self.get_legal_reasons():
-            fields.append(
-                {
-                    "field_name": reason.field_name,
-                    "field": forms.BooleanField(
-                        label=reason.flag_text, required=reason.required
-                    ),
-                }
-            )
+            if reason.required:
+                fields.append(
+                    {
+                        "field_name": reason.field_name,
+                        "field": forms.BooleanField(label=reason.flag_text),
+                    }
+                )
+            else:
+                fields.append(
+                    {
+                        "field_name": reason.field_name,
+                        "field": forms.TypedChoiceField(
+                            label=reason.flag_text,
+                            coerce=lambda x: x == "True",
+                            choices=((True, _("Accetto")), (False, _("Rifiuto"))),
+                            widget=forms.RadioSelect,
+                        ),
+                    }
+                )
         return fields
+
+
+class LegalReasonGroupManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related("legal_reasons")
 
 
 class PrivacyLogManager(models.Manager):
@@ -30,10 +47,10 @@ class PrivacyLogManager(models.Manager):
         self.privacy_log = apps.get_model("gdpr_helpers", "PrivacyLog")
         self.privacy_event = apps.get_model("gdpr_helpers", "PrivacyEvent")
 
-    def create_log(self, user, cleaned_data):
+    def create_log(self, content_object, cleaned_data):
         self._lazy_load_models()
         """Create a new Log using data from a form"""
-        privacy_log = self.privacy_log(user=user)
+        privacy_log = self.privacy_log(content_object=content_object)
         privacy_log.save()
         for reason in self.legal_reason.objects.get_legal_reasons():
             if reason.field_name in cleaned_data:
