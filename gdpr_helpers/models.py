@@ -1,29 +1,63 @@
-from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-from .managers import LegalReasonManager, PrivacyLogManager
+from .managers import LegalReasonGroupManager, LegalReasonManager, PrivacyLogManager
 
 
 class PrivacyLog(models.Model):
     """A new log will be created when a user accept some flags"""
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.PROTECT,
-        verbose_name=_("Utente"),
-        related_name="privacy",
-    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.PROTECT)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
     created = models.DateTimeField(_("Data creazione"), auto_now_add=True)
 
     objects = PrivacyLogManager()
 
     def __str__(self):
-        return f"{self.user} privacy-log {self.created}"
+        return f"{self.content_type} privacy-log {self.created}"
 
     class Meta:
         verbose_name = _("Privacy log")
         verbose_name_plural = _("Privacy logs")
+
+
+class LegalReasonGroup(models.Model):
+    """
+    Group LegalReason by a common key to use in specific form,
+    es: contact form, registration form, lead form etc.
+    We use fixed key so the developer know what theyr name is
+    """
+
+    CONTACT_FORM = "contact_form"
+    REGISTRATION_FORM = "registration_form"
+    LANDING_FORM = "landing_form"
+    WHERE = (
+        (CONTACT_FORM, _("Contact form")),
+        (REGISTRATION_FORM, _("Registration form")),
+        (LANDING_FORM, _("Landing form")),
+    )
+    where = models.CharField(
+        _("Posizione del gruppo"), max_length=20, choices=WHERE, unique=True
+    )
+
+    objects = LegalReasonGroupManager()
+
+    def get_as_form_fields(self):
+        fields = []
+        for reason in self.legal_reasons.get_as_form_fields():
+            fields.append(reason)
+        return fields
+
+    def __str__(self):
+        return gettext(f"For use in {self.where}")
+
+    class Meta:
+        verbose_name = _("Gruppo ragioni legali")
+        verbose_name_plural = _("Gruppi ragioni legali")
 
 
 class LegalReason(models.Model):
@@ -35,6 +69,14 @@ class LegalReason(models.Model):
     )
     required = models.BooleanField(_("Obbligatorio"), default=False)
     active = models.BooleanField(_("Attivo"), default=False)
+    legal_group = models.ForeignKey(
+        LegalReasonGroup,
+        verbose_name=_("Gruppo di ragioni legali"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="legal_reasons",
+    )
 
     objects = LegalReasonManager()
 
