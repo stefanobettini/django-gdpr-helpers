@@ -35,10 +35,12 @@ class LegalReasonGroup(models.Model):
     CONTACT_FORM = "contact_form"
     REGISTRATION_FORM = "registration_form"
     LANDING_FORM = "landing_form"
+    NEWSLETTER_FORM = "newsletter_form"
     WHERE = (
         (CONTACT_FORM, _("Contact form")),
         (REGISTRATION_FORM, _("Registration form")),
         (LANDING_FORM, _("Landing form")),
+        (NEWSLETTER_FORM, _("Newsletter form")),
     )
     where = models.CharField(
         _("Posizione del gruppo"), max_length=20, choices=WHERE, unique=True
