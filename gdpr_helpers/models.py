@@ -29,7 +29,7 @@ class LegalReasonGroup(models.Model):
     """
     Group LegalReason by a common key to use in specific form,
     es: contact form, registration form, lead form etc.
-    We use fixed key so the developer know what theyr name is
+    We use fixed key so the developer know what their names is
     """
 
     CONTACT_FORM = "contact_form"
