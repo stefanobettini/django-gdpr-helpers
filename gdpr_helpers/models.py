@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -32,16 +33,7 @@ class LegalReasonGroup(models.Model):
     We use fixed key so the developer know what their names is
     """
 
-    CONTACT_FORM = "contact_form"
-    REGISTRATION_FORM = "registration_form"
-    LANDING_FORM = "landing_form"
-    NEWSLETTER_FORM = "newsletter_form"
-    WHERE = (
-        (CONTACT_FORM, _("Contact form")),
-        (REGISTRATION_FORM, _("Registration form")),
-        (LANDING_FORM, _("Landing form")),
-        (NEWSLETTER_FORM, _("Newsletter form")),
-    )
+    WHERE = getattr(settings, "GDPR_HELPERS_FORM_TYPE", ())
     where = models.CharField(
         _("Posizione del gruppo"), max_length=20, choices=WHERE, unique=True
     )
