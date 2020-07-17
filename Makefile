@@ -29,7 +29,7 @@ venv: ## Create a venv and install test requirements
 #############################
 # Sandbox management commands
 #############################
-sandbox-build: sandbox-clean sandbox-install ## Create a sandbox from scratch, delete the dabase if it exists
+sandbox-build: sandbox-clean venv sandbox-install ## Create a sandbox from scratch, delete the database if it exists
 
 sandbox-clean: ## Destroy sandbox database 
 	rm -rf sandbox/db.sqlite3
