@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -30,13 +29,9 @@ class LegalReasonGroup(models.Model):
     """
     Group LegalReason by a common key to use in specific form,
     es: contact form, registration form, lead form etc.
-    We use fixed key so the developer know what their names is
     """
 
-    WHERE = getattr(settings, "GDPR_HELPERS_FORM_TYPE", ())
-    where = models.CharField(
-        _("Posizione del gruppo"), max_length=20, choices=WHERE, unique=True
-    )
+    where = models.CharField(_("Posizione del gruppo"), max_length=100, unique=True)
 
     objects = LegalReasonGroupManager()
 

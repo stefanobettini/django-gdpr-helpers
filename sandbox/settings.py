@@ -1,8 +1,6 @@
 # Django settings for sandbox project.
 import os
 
-from django.utils.translation import gettext_lazy as _
-
 PROJECT_ROOT = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG = True
@@ -88,11 +86,4 @@ INSTALLED_APPS = (
     "django.contrib.admin",
     "gdpr_helpers",
     "example_app",
-)
-
-GDPR_HELPERS_FORM_TYPE = (
-    ("contact_form", _("Contact form")),
-    ("registration_form", _("Registration form")),
-    ("landing_form", _("Landing form")),
-    ("newsletter_form", _("Newsletter form")),
 )
