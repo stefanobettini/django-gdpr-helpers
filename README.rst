@@ -7,7 +7,63 @@ GDPR Helpers
 
 GDPR Helpers is a Django app for easy GDPR compliance.
 
-Install
+Quickstart
 -------
 
-1. Add "gdpr_helpers" to INSTALLED_APPS
+Install Django GDPR Helpers:
+   pip install -e git+git@github.com:Arussil/django-gdpr-helpers.git
+
+Add it to your `INSTALLED_APPS`:
+
+.. code-block:: python
+   INSTALLED_APPS = (
+      ...
+      'gdpr_helpers',
+      ...
+   )
+
+Define your reasons for asking personal data and assign them to a group:
+
+.. code-block:: python
+
+   from gdpr_helpers.models import LegalReasonGroup, LegalReason
+
+   group = LegalReasonGroup.objects.create(where="registration")
+
+   LegalReason.objects.create(group=group, flag_text="Required for registration", active=True, required=True)
+   LegalReason.objects.create(group=group, flag_text="Optional for registration", active=True, required=False)
+
+Or use the django-admin.
+
+Add the Mixin to a form that create an object and need privacy flags:
+
+.. code-block:: python
+
+   from django import forms
+   from gdpr_helpers.forms import GDPRFormMixin
+   from .models import User
+
+
+   class RegistrationForm(GDPRFormMixin):
+      class Meta:
+         model = User
+         where = "registration"
+         fields = ("whatever_fields_from_model",)
+
+Note that the privacy fields are already injected in the form.
+
+Filling the form will now create logs for the object created.
+
+Features
+--------
+
+* Can define Legal reason for which you are collecting personal data
+* Create logs for the data you collected with a timestamp and what the user consented to
+* Logs are anonymous
+
+TODO
+----
+
+* When the user/system/admin removes the object we must keep a reference, maybe an unique ID that binds the deleted record to the logs
+* Adding a serializer to use it on rest_framework project
+* Add the ability to define a timer for data based on Legal reason, so we can destroy it after it expires or ask the user for another consent
