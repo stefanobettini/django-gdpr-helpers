@@ -10,7 +10,7 @@ GDPR Helpers is a Django app for easy GDPR compliance.
 Quickstart
 -------
 
-Install Django GDPR Helpers::
+Install Django GDPR Helpers:
    pip install -e git+git@github.com:Arussil/django-gdpr-helpers.git
 
 Add it to your `INSTALLED_APPS`:
@@ -38,6 +38,7 @@ Or use the django-admin.
 Add the Mixin to a form that create an object and need privacy flags:
 
 .. code-block:: python
+
    from django import forms
    from gdpr_helpers.forms import GDPRFormMixin
    from .models import User
