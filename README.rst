@@ -28,10 +28,10 @@ Define your reasons for asking personal data and assign them to a group:
 
    from gdpr_helpers.models import LegalReasonGroup, LegalReason
 
-   group = LegalReasonGroup.objects.create(where="registration")
+   legal_group = LegalReasonGroup.objects.create(where="registration")
 
-   LegalReason.objects.create(group=group, flag_text="Required for registration", active=True, required=True)
-   LegalReason.objects.create(group=group, flag_text="Optional for registration", active=True, required=False)
+   LegalReason.objects.create(legal_group=legal_group, flag_text="Required for registration", active=True, required=True)
+   LegalReason.objects.create(legal_group=legal_group, flag_text="Optional for registration", active=True, required=False)
 
 Or use the django-admin.
 
