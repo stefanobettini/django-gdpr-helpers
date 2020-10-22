@@ -1,4 +1,6 @@
 VENV = venv
+PYTEST = $(PWD)/$(VENV)/bin/pytest
+COVERAGE = $(PWD)/$(VENV)/bin/coverage
 
 # HELP
 # This will output the help for each task
@@ -23,7 +25,6 @@ install-test: ## Install test requirements
 
 venv: ## Create a venv and install test requirements
 	$(shell which python3) -m venv $(VENV)
-	$(VENV)/bin/pip install --upgrade pip
 	$(VENV)/bin/pip install -e .[test]
 
 #############################
@@ -41,9 +42,17 @@ sandbox-install: ## Migrate the database
 # Test management commands
 #############################
 test: ## Run test
-	cd sandbox && python manage.py test .
+	$(PYTEST)
 
-pytest: ## Run Pytest
-	cd sandbox && pytest ../tests/
+retest: ## Run failed tests only
+	$(PYTEST) --lf
+
+coverage: ## Run test with coverage
+	$(COVERAGE) run --source=gdpr_helpers -m pytest 
+
+coverage-html: ## Make coverage html report
+	$(COVERAGE) html
+
+full-test: coverage coverage-html ## Run test with coverage and make html report
 
 .PHONY: help install-test venv sandbox-build sandbox-clean sandbox-install tests
