@@ -51,7 +51,7 @@ class LegalReasonGroup(models.Model):
 
 class LegalReason(models.Model):
     """Register the legal reason, it will be used for flags and privacy-policy page"""
-    name = models.CharField(blank=True, null=True, max_length=50)
+    slug = models.SlugField(_("Slug del consenso"), unique=True)
     flag_text = models.TextField(_("Testo da mostrare nella spunta"))
     privacy_description = models.TextField(
         _("Descrizione per pagina privacy"), blank=True, null=True
@@ -71,7 +71,7 @@ class LegalReason(models.Model):
 
     @property
     def field_name(self):
-        return f"privacy_{self.pk}"
+        return f"privacy_{self.slug}"
 
     def __str__(self):
         return self.flag_text

@@ -13,17 +13,20 @@ def registration_legal_reason_group(db) -> LegalReasonGroup:
         required=True,
         active=True,
         flag_text="Required for registration",
+        slug="registration",
     )
     LegalReason.objects.create(
         legal_group=group,
         required=False,
         active=True,
         flag_text="Optional for registration",
+        slug="marketing",
     )
     LegalReason.objects.create(
         legal_group=group,
         required=False,
         flag_text="Required for registration, but not active",
+        slug="profiling"
     )
     return group
 
@@ -35,7 +38,7 @@ def registration(db) -> DummyModel:
 
 @pytest.fixture
 def log(db, registration_legal_reason_group, registration) -> PrivacyLog:
-    cleaned_data = {"privacy_1": True, "privacy_2": False}
+    cleaned_data = {"privacy_registration": True, "privacy_marketing": False}
     return PrivacyLog.objects.create_log(
         content_object=registration, cleaned_data=cleaned_data
     )

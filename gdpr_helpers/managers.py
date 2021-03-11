@@ -57,8 +57,27 @@ class PrivacyLogManager(models.Manager):
                 self.privacy_event.objects.create(
                     privacy_log=privacy_log,
                     legal_reason=self.legal_reason.objects.get(
-                        pk=reason.field_name.split("privacy_")[1]
+                        slug=reason.field_name.split("privacy_")[1]
                     ),
                     accepted=cleaned_data[reason.field_name],
                 )
         return privacy_log
+
+    def get_privacy_logs_for_object(self, object_id):
+        """Return last privacy log for object"""
+        self._lazy_load_models()
+        return self.prefetch_related("event").filter(object_id=object_id).order_by("-created")
+
+    def get_consents_for_object(self, object_id):
+        consents = []
+        log = self.get_privacy_logs_for_object(object_id)
+        if log:
+            for event in log[0].event.all():
+                consents.append(
+                    {
+                        "slug": event.legal_reason.slug,
+                        "accepted": event.accepted,
+                        "given_at": event.privacy_log.created
+                    }
+                )
+        return consents
