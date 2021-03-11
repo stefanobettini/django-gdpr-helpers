@@ -30,8 +30,8 @@ Define your reasons for asking personal data and assign them to a group:
 
    legal_group = LegalReasonGroup.objects.create(where="registration")
 
-   LegalReason.objects.create(legal_group=legal_group, flag_text="Required for registration", active=True, required=True)
-   LegalReason.objects.create(legal_group=legal_group, flag_text="Optional for registration", active=True, required=False)
+   LegalReason.objects.create(legal_group=legal_group, flag_text="Required for registration", slug="registration", active=True, required=True)
+   LegalReason.objects.create(legal_group=legal_group, flag_text="Optional for registration", slug="marketing", active=True, required=False)
 
 Or use the django-admin.
 
