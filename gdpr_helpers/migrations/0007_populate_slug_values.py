@@ -5,7 +5,7 @@ from django.db import migrations
 def populate_slugs(apps, schema_editor):
     LegalReason = apps.get_model("gdpr_helpers", "LegalReason")
     for legal_reason in LegalReason.objects.all():
-        legal_reason.slug = f"privacy_{legal_reason.pk}"
+        legal_reason.slug = f"{legal_reason.pk}"
         legal_reason.save(update_fields=["slug"])
 
 class Migration(migrations.Migration):
