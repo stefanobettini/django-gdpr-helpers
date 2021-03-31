@@ -10,7 +10,7 @@ def test_get_privacy_logs_for_object(registration_legal_reason_group, registrati
         content_object=registration,
         cleaned_data={"privacy_registration": True, "privacy_marketing": True}
     )
-    log = PrivacyLog.objects.get_privacy_logs_for_object(registration.id)[0]
+    log = PrivacyLog.objects.get_privacy_logs_for_object(registration)
     assert log_created == log
 
 
@@ -32,4 +32,4 @@ def test_get_consents_for_object(registration_legal_reason_group, registration, 
         content_object=registration,
         cleaned_data={"privacy_registration": True, "privacy_marketing": False}
     )
-    assert PrivacyLog.objects.get_consents_for_object(registration.id) == expected
+    assert PrivacyLog.objects.get_consents_for_object(registration) == expected

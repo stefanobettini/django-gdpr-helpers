@@ -1,6 +1,7 @@
 from django import forms
 from django.apps import apps
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext_lazy as _
 
 
@@ -63,16 +64,17 @@ class PrivacyLogManager(models.Manager):
                 )
         return privacy_log
 
-    def get_privacy_logs_for_object(self, object_id):
+    def get_privacy_logs_for_object(self, object_instance):
         """Return last privacy log for object"""
         self._lazy_load_models()
-        return self.prefetch_related("event").filter(object_id=object_id).order_by("-created")
+        content_type = ContentType.objects.get_for_model(object_instance)
+        return self.prefetch_related("event").filter(content_type=content_type, object_id=object_instance.id).order_by("-created").first()
 
-    def get_consents_for_object(self, object_id):
+    def get_consents_for_object(self, object_instance):
         consents = []
-        log = self.get_privacy_logs_for_object(object_id)
+        log = self.get_privacy_logs_for_object(object_instance)
         if log:
-            for event in log[0].event.all():
+            for event in log.event.all():
                 consents.append(
                     {
                         "slug": event.legal_reason.slug,
